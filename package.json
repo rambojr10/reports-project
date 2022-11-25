@@ -4,9 +4,8 @@
   "description": "Report generator",
   "main": "index.js",
   "scripts": {
-    "test": "webpack --mode=development",
     "dev-server": "webpack-dev-server --mode=development",
-    "dev": "node src/server/index.js",
+    "start": "node src/server/index.js",
     "build": "webpack --config webpack.prod.js"
   },
   "keywords": [],
