@@ -4,18 +4,22 @@
   "description": "Report generator",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode=development",
-    "test": "webpack-dev-server --mode=development"
+    "test": "webpack --mode=development",
+    "dev-server": "webpack-dev-server --mode=development",
+    "dev": "node src/server/index.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "keywords": [],
   "author": "Andrés Valencia",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "express": "^4.18.2",
     "handsontable": "^12.2.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0",
-    "webpack-dev-server": "^4.11.1"
+    "webpack-dev-server": "^4.11.1",
+    "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
     "css-loader": "^6.7.2",
