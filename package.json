@@ -4,9 +4,10 @@
   "description": "Report generator",
   "main": "index.js",
   "scripts": {
-    "dev-server": "webpack-dev-server --mode=development",
-    "start": "node src/server/index.js",
-    "build": "webpack --config webpack.prod.js"
+    "dev": "webpack-dev-server --mode=development",
+    "start": "node src/server/server.js",
+    "build": "webpack --config webpack.prod.js",
+    "test": "webpack --mode=development"
   },
   "keywords": [],
   "author": "Andrés Valencia",

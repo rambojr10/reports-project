@@ -4,15 +4,14 @@ import 'handsontable/dist/handsontable.full.min.css'
 import Handsontable from 'handsontable'
 // import bootstrap from 'bootstrap'
 
-const table = document.querySelector('#table')
+const tableReports = document.querySelector('#tblReports')
 
 const configs = {
     data: [],
-    colHeaders: true,
     height: 'auto',
     licenseKey: 'non-commercial-and-evaluation',
     stretchH: 'all',
-    formulas: true,
+    formulas: false,
     rowHeaders: false,
     contextMenu: false,
     manualRowMove: false,
@@ -78,20 +77,20 @@ const configs = {
         }
     ],
 }
-const hot = new Handsontable(table, configs)
+const hot = tableReports && new Handsontable(tableReports, configs)
 
 const txtRows = document.querySelector('#txtRows')
 txtRows.addEventListener('change', e => {
     const rows = e.target.value
-    hot.updateSettings({
+    hot?.updateSettings({
         minRows: rows,
         maxRows: rows
     })
 })
 
-const btnGenerate = document.querySelector('#btnGenerate')
+const btnGenerate = document.querySelector('#btnGenerateReports')
 const txtReport = document.querySelector('#txtReport')
-btnGenerate.addEventListener('click', _ => {
+btnGenerate?.addEventListener('click', _ => {
     const data = hot.getSourceData()
     const toReport = data.filter(e => e.toReport?.match(/si/i))
     const string = makeTemplate(toReport)
@@ -99,7 +98,7 @@ btnGenerate.addEventListener('click', _ => {
 })
 
 const btnCopy = document.querySelector('#btnCopy')
-btnCopy.addEventListener('click', _ => copy(txtReport))
+btnCopy?.addEventListener('click', _ => copy(txtReport))
 
 function makeTemplate(data) {
     let string = ''
@@ -111,7 +110,7 @@ function makeTemplate(data) {
             Feedtype: ${e.feedtype}
             Type: ${e.type}
             Razon: ${e.comment}
-            QA: ${e.qa || 'N/A'}
+            QA: ${'@' + e.qa || 'N/A'}
             Print: ${e.print || 'N/A'}
         `
     })
