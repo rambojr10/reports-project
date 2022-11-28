@@ -110,8 +110,8 @@ function makeTemplate(data) {
             Scanid: ${e.scanid}
             Feedtype: ${e.feedtype}
             Type: ${e.type}
-            Razon: ${e.comment}
-            QA: ${e.qa || 'N/A'}
+            Razón: ${e.comment}
+            QA: ${'@'+e.qa || 'N/A'}
             Print: ${e.print || 'N/A'}
         `
     })
