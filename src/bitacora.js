@@ -27,10 +27,7 @@ indexers.forEach(e => {
     cmbIndexer.appendChild(option)
 })
 
-const tableBitacora = document.querySelector('#tblBitacora')
-
 const configsForBitacora = {
-    data: [],
     height: 'auto',
     licenseKey: 'non-commercial-and-evaluation',
     stretchH: 'all',
@@ -40,12 +37,14 @@ const configsForBitacora = {
     manualRowMove: false,
     filters: false,
     dropdownMenu: false,
+    maxRows: 0,
     colHeaders: [
         'Date', 'Strategy', 'Scanid', 'Empcode', 'Indexer'
     ],
-    columns: [{ data: 'date' }, { data: 'strategy' }, { data: 'scanid' }, { data: 'empcode' }, { data: 'indexer' }],
+    // columns: [{ data: 'date' }, { data: 'strategy' }, { data: 'scanid' }, { data: 'empcode' }, { data: 'indexer' }],
 }
 
+const tableBitacora = document.querySelector('#tblBitacora')
 const hot2 = tableBitacora && new Handsontable(tableBitacora, configsForBitacora)
 
 txtRows.addEventListener('change', e => {
@@ -66,8 +65,8 @@ function defineType(type) {
         'CL': 'Maintenance - CL'
     }
     for (const [key, value] of Object.entries(cases)) {
-        if (type.match(new RegExp(key, 'i'))) 
-            return value 
+        if (type.match(new RegExp(key, 'i')))
+            return value
     }
 }
 
@@ -76,7 +75,7 @@ const columnsForBitacora = [
     'Warranty to', '> 2 SID', 'Supported by', 'Requested by',
     'Time (mins)', 'Status', 'Assigned by', 'Operation'
 ]
-const nameColumns = [
+/* const nameColumns = [
     {
         "data": "date",
         "type": "text"
@@ -133,24 +132,30 @@ const nameColumns = [
         "data": "operation",
         "type": "text"
     }
-]
-
-let hot3
+] */
 
 const dataForTable = []
 const btnGenerateBitacora = document.querySelector('#btnGenerateBitacora')
 btnGenerateBitacora?.addEventListener('click', _ => {
-    const dataTable = hot2.getSourceData()
-    dataTable.forEach(e => {
+
+    const cmbValue = cmbIndexer.value
+    const dataTable = hot2.getData()
+    if (cmbValue === '0') {
+        return alert('Please choose a Indexer')
+    }
+
+    const filterData = dataTable.filter(e => e[4].match(new RegExp(cmbValue, 'i')))
+    filterData.forEach(e => {
+        const [date, strategy, ,empcode, indexer] = e
         const element = [
-            e.date,
-            defineType(e.strategy),
-            e.empcode,
+            date,
+            defineType(strategy),
+            empcode,
             'No',
-            e.indexer,
+            indexer,
             'Mantenimiento',
             '',
-            '',
+            'No',
             '',
             '',
             '10',
@@ -160,22 +165,20 @@ btnGenerateBitacora?.addEventListener('click', _ => {
         ]
         dataForTable.push(element)
     })
-    hot3 = new Handsontable(document.querySelector('#tblNewData'), {
-        ...configsForBitacora,
-        colHeaders: columnsForBitacora,
-        columns: nameColumns,
-        data: dataForTable
-    })
-    // hot2.updateSettings({
-    //     colHeaders: columnsForBitacora,
-    //     columns: nameColumns
-    //     // columns: columsForBitacora.map(e => {
-    //     //     return {data: e.toLowerCase(), type: 'text'}
-    //     // }),
-    // })
-    // hot2.loadData(dataForTable)
-    // console.log(hot2.getSourceData())
+
+    if (dataForTable.length > 0) {
+        hot2.updateSettings({
+            colHeaders: columnsForBitacora,
+            // columns: nameColumns,
+            minRows: dataForTable.length,
+            maxRows: dataForTable.length,
+            contextMenu: ['copy'],
+        })
+        hot2.updateData(dataForTable)
+    }
 })
 
-const btnGet = document.querySelector('#btnGet')
-btnGet.addEventListener('click', e => console.log(hot3.getSourceData()))
+const btnSelectRows = document.querySelector('#btnSelectRows')
+btnSelectRows.addEventListener('click', _ => {
+    hot2.selectRows(0, dataForTable.length - 1)
+})
