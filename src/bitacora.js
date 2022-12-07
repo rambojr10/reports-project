@@ -137,7 +137,6 @@ const columnsForBitacora = [
 const dataForTable = []
 const btnGenerateBitacora = document.querySelector('#btnGenerateBitacora')
 btnGenerateBitacora?.addEventListener('click', _ => {
-
     const cmbValue = cmbIndexer.value
     const dataTable = hot2.getData()
     if (cmbValue === '0') {
@@ -146,7 +145,7 @@ btnGenerateBitacora?.addEventListener('click', _ => {
 
     const filterData = dataTable.filter(e => e[4].match(new RegExp(cmbValue, 'i')))
     filterData.forEach(e => {
-        const [date, strategy, ,empcode, indexer] = e
+        const [date, strategy, , empcode, indexer] = e
         const element = [
             date,
             defineType(strategy),
@@ -175,6 +174,7 @@ btnGenerateBitacora?.addEventListener('click', _ => {
             contextMenu: ['copy'],
         })
         hot2.updateData(dataForTable)
+        btnGenerateBitacora.toggleAttribute('disabled')
     }
 })
 
