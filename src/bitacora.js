@@ -1,5 +1,5 @@
-import Handsontable from "handsontable"
 import 'handsontable/dist/handsontable.full.min.css';
+import Handsontable from "handsontable"
 
 const cmbIndexer = document.querySelector('#cmbIndexer')
 const indexers = [
@@ -21,11 +21,6 @@ const indexers = [
     'Valentina Posada',
     'Victoria Reyes',
 ]
-indexers.forEach(e => {
-    const option = document.createElement('option')
-    option.innerText = e
-    cmbIndexer.appendChild(option)
-})
 
 const configsForBitacora = {
     height: 'auto',
@@ -41,7 +36,17 @@ const configsForBitacora = {
     colHeaders: [
         'Date', 'Strategy', 'Scanid', 'Empcode', 'Indexer'
     ],
-    // columns: [{ data: 'date' }, { data: 'strategy' }, { data: 'scanid' }, { data: 'empcode' }, { data: 'indexer' }],
+    afterChange: (changes) => {
+        if (changes) {
+            const list = [] // Array to fill the cmb with dynamic values
+            changes.forEach(([row, prop, oldValue, newValue]) => {
+                if (prop === 4 && indexers.includes(newValue)) {
+                    list.push(newValue)
+                }
+            })
+            fillCmb(new Set(list))
+        }
+    }
 }
 
 const tableBitacora = document.querySelector('#tblBitacora')
@@ -57,12 +62,17 @@ txtRows.addEventListener('change', e => {
 
 function defineType(type) {
     const cases = {
-        'Boo-e': 'Maintenance - Boo error PPC',
-        'Last Warning': 'Maintenance - Boo error PPC',
-        'Correo': 'Maintenance - Boo error PPC',
-        'Matrix': 'Maintenance - Matrix',
-        'Stuck': 'Maintenance - Stucked PPC',
-        'CL': 'Maintenance - CL'
+        'Boo-e': 'M-Boo-E',
+        'Last Warning': 'M-Matrix-Last Warning',
+        'Correo': 'M-Boo-E',
+        "blue": 'M-Matrix Blue',
+        "red": 'M-Matrix Red',
+        "yellow": 'M-Matrix Yellow',
+        "gray": 'M-Matrix Gray',
+        "black": 'M-Matrix Black',
+        "orange": 'M-Matrix Orange',
+        'Stuck': 'M-Stuck',
+        'CL': 'Company List',
     }
     for (const [key, value] of Object.entries(cases)) {
         if (type.match(new RegExp(key, 'i')))
@@ -71,68 +81,10 @@ function defineType(type) {
 }
 
 const columnsForBitacora = [
-    'Date', 'Type', 'Empcode', 'Warranty', 'Assigned to', 'Team',
+    'Week', 'Date', 'Type', 'Empcode', 'Warranty', 'Assigned to', 'Team',
     'Warranty to', '> 2 SID', 'Supported by', 'Requested by',
     'Time (mins)', 'Status', 'Assigned by', 'Operation'
 ]
-/* const nameColumns = [
-    {
-        "data": "date",
-        "type": "text"
-    },
-    {
-        "data": "type",
-        "type": "text"
-    },
-    {
-        "data": "empcode",
-        "type": "text"
-    },
-    {
-        "data": "warranty",
-        "type": "text"
-    },
-    {
-        "data": "assignedto",
-        "type": "text"
-    },
-    {
-        "data": "team",
-        "type": "text"
-    },
-    {
-        "data": "warrantyto",
-        "type": "text"
-    },
-    {
-        "data": "sid",
-        "type": "text"
-    },
-    {
-        "data": "supportedby",
-        "type": "text"
-    },
-    {
-        "data": "requestedby",
-        "type": "text"
-    },
-    {
-        "data": "time",
-        "type": "text"
-    },
-    {
-        "data": "status",
-        "type": "text"
-    },
-    {
-        "data": "assignedby",
-        "type": "text"
-    },
-    {
-        "data": "operation",
-        "type": "text"
-    }
-] */
 
 const dataForTable = []
 const btnGenerateBitacora = document.querySelector('#btnGenerateBitacora')
@@ -147,6 +99,7 @@ btnGenerateBitacora?.addEventListener('click', _ => {
     filterData.forEach(e => {
         const [date, strategy, , empcode, indexer] = e
         const element = [
+            getCurrentWeek(date),
             date,
             defineType(strategy),
             empcode,
@@ -182,3 +135,20 @@ const btnSelectRows = document.querySelector('#btnSelectRows')
 btnSelectRows.addEventListener('click', _ => {
     hot2.selectRows(0, dataForTable.length - 1)
 })
+
+//
+function getCurrentWeek(date) {
+    const currentDate = new Date(date);
+    const startDate = new Date(currentDate.getFullYear(), 0, 1);
+    const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    return (Math.ceil(days / 7))
+}
+
+// 
+function fillCmb(list) {
+    list.forEach(e => {
+        const option = document.createElement('option')
+        option.innerText = e
+        cmbIndexer.appendChild(option)
+    })
+}
