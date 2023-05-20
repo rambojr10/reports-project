@@ -1,5 +1,5 @@
-import 'handsontable/dist/handsontable.full.min.css';
 import Handsontable from "handsontable"
+import 'handsontable/dist/handsontable.full.min.css'
 
 const cmbIndexer = document.querySelector('#cmbIndexer')
 const indexers = [
@@ -80,10 +80,25 @@ function defineType(type) {
     }
 }
 
+function defineClassification(type) {
+    const cases = {
+        'M-Boo-E': 'Boo-E -  solo correr y cambiar status',
+        'M-Matrix-Last Warning': 'Revisión de no jobs / reporte de feeds',
+        'M-Matrix Blue': 'Revisión de delayed - casos azules',
+        'M-Matrix Red': 'Cambio de Expected',
+        'M-Matrix Yellow': 'Cambio de Expected',
+        'M-Matrix Gray': 'Cambio de Expected',
+        'M-Matrix Black': 'Cambio de Expected',
+        'M-Matrix Orange': 'Cambio de Expected',
+        'M-Stuck': 'Se trabajó por stuck. Solo correr y cambiar status',
+        'Company List': 'Cambio de Expected',
+    }
+    return cases[type]
+}
+
 const columnsForBitacora = [
-    'Week', 'Date', 'Type', 'Empcode', 'Warranty', 'Assigned to', 'Team',
-    'Warranty to', '> 2 SID', 'Supported by', 'Requested by',
-    'Time (mins)', 'Status', 'Assigned by', 'Operation'
+    'Week', 'Date', 'Type', 'Empcode', 'Scanid', 'Warranty', 'Assigned to', '',
+    'Warranty to', 'Status', 'No.Ticket', 'Comments', '', '', 'Required Edition'
 ]
 
 const dataForTable = []
@@ -97,23 +112,27 @@ btnGenerateBitacora?.addEventListener('click', _ => {
 
     const filterData = dataTable.filter(e => e[4].match(new RegExp(cmbValue, 'i')))
     filterData.forEach(e => {
-        const [date, strategy, , empcode, indexer] = e
+
+        const [date, strategy, scanid, empcode, indexer] = e
+        const type = defineType(strategy)
+        const classification = defineClassification(type)
+
         const element = [
             getCurrentWeek(date),
             date,
-            defineType(strategy),
+            type,
             empcode,
-            'No',
+            scanid,
+            '',
             indexer,
-            'Mantenimiento',
-            '',
-            'No',
             '',
             '',
-            '10',
             'Done',
             '',
-            'Mantenimiento'
+            '',
+            '',
+            '',
+            classification,
         ]
         dataForTable.push(element)
     })
@@ -138,9 +157,9 @@ btnSelectRows.addEventListener('click', _ => {
 
 //
 function getCurrentWeek(date) {
-    const currentDate = new Date(date);
-    const startDate = new Date(currentDate.getFullYear(), 0, 1);
-    const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    const currentDate = new Date(date)
+    const startDate = new Date(currentDate.getFullYear(), 0, 1)
+    const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000))
     return (Math.ceil(days / 7))
 }
 

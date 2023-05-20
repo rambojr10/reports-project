@@ -1,8 +1,7 @@
+import Handsontable from 'handsontable'
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'handsontable/dist/handsontable.full.min.css'
-import Handsontable from 'handsontable'
-// import bootstrap from 'bootstrap'
 
 const tableReports = document.querySelector('#tblReports')
 
